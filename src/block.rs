@@ -64,23 +64,19 @@ fn parse_block(input: ParseStream) -> Result<Option<Block>, Error> {
         Ok(Some(Block::It(block)))
     } else if lookahead.peek(describe) || lookahead.peek(context) {
         println!("Found describe...");
-        match input.parse::<Describe>() {
-            Ok(describe_block) => {
-                println!("Parsed describe block.....");
-                let block = Block::Describe(describe_block);
-                println!("Parsed Describe block here: {:?}", block);
-                Ok(Some(block))
-            },
-            Err(e) => {
-                println!("Error when parsing Describe: {}", e);
-                return Err(e);
-            },
-        }
+        input.parse::<syn::token::Ident>()?;
+        Ok(Some(input.parse::<Describe>().map(Block::Describe)?))
+    } else if lookahead.peek(describe) || lookahead.peek(context) {
+        println!("Found describe...");
+        input.parse::<syn::token::Ident>()?;
+        Ok(Some(input.parse::<Describe>().map(Block::Describe)?))
     } else if lookahead.peek(it) || lookahead.peek(test) {
         println!("Found test...");
+        input.parse::<syn::token::Ident>()?;
         Ok(Some(input.parse::<It>().map(Block::It)?))
     } else if lookahead.peek(bench) {
         println!("Found bench...");
+        input.parse::<syn::token::Ident>()?;
         Ok(Some(input.parse::<Bench>().map(Block::Bench)?))
     } else if let Ok(item) = forked_input.parse::<syn::Item>() {
         println!("Parsing item...");
@@ -139,17 +135,11 @@ impl Parse for Describe {
     fn parse(input: ParseStream) -> Result<Self, Error> {
         println!("Starting to parse Describe...");
         let lookahead = input.lookahead1();
-        let name: syn::Ident = if lookahead.peek(describe) {
-            let _: describe = input.parse()?;
-            let name: LitStr = input.parse()?;
-            println!("Parsed describe name...");
+        let name: syn::Ident = if lookahead.peek(syn::LitStr) {
+            let name: syn::LitStr = input.parse()?;
+            println!("Parsed name...");
             litstr_to_ident(&name)
-        } else if lookahead.peek(context) {
-            let _: context = input.parse()?;
-            let name: LitStr = input.parse()?;
-            println!("Parsed context name...");
-            litstr_to_ident(&name)
-        } else { // Should only enter here in the case of speculate root.
+        } else {
             println!("Using root name...");
             get_root_name()
         };
@@ -192,15 +182,6 @@ pub struct It {
 impl Parse for It {
     fn parse(input: ParseStream) -> Result<Self, Error> {
         let attributes: Vec<syn::Attribute> = input.call(syn::Attribute::parse_outer)?;
-        let lookahead = input.lookahead1();
-        if lookahead.peek(it) {
-            let _: it = input.parse()?;
-        } else if lookahead.peek(test) {
-            let _: test = input.parse()?;
-        } else {
-            return Err(lookahead.error());
-        }
-
         let name: LitStr = input.parse()?;
         let block = input.parse::<syn::Block>()?;
         println!("Parsed it block: {:?}", block);
@@ -222,7 +203,6 @@ pub struct Bench {
 
 impl Parse for Bench {
     fn parse(input: ParseStream) -> Result<Self, Error> {
-        let _: bench = input.parse()?;
         let name: LitStr = input.parse()?;
         let ident = input.parse()?;
         let block = input.parse()?;
