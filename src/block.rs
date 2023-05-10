@@ -57,13 +57,18 @@ fn parse_block(input: ParseStream) -> Result<Option<Block>, Error> {
         let lookahead = input.lookahead1();
 
         if lookahead.peek(describe) || lookahead.peek(context) {
+            println!("Found describe...");
             Ok(Some(input.parse::<Describe>().map(Block::Describe)?))
         } else if lookahead.peek(it) || lookahead.peek(test) {
+            println!("Found test...");
             Ok(Some(input.parse::<It>().map(Block::It)?))
         } else if lookahead.peek(bench) {
+            println!("Found bench...");
             Ok(Some(input.parse::<Bench>().map(Block::Bench)?))
         } else if let Ok(item) = forked_input.parse::<syn::Item>() {
             input.parse::<syn::Item>().unwrap();
+            println!("Parsing item...");
+            println!("Input for item: {:?}", input);
             Ok(Some(Block::Item(item)))
         } else {
             Ok(None)
