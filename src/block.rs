@@ -52,6 +52,7 @@ fn parse_block(input: ParseStream) -> Result<Option<Block>, Error> {
 
     let forked_input = input.fork();
     let lookahead = input.lookahead1();
+    println!("Lookahead result: {:?}", lookahead);
 
     if lookahead.peek(syn::token::Pound) {
         // If the next token is '#', parse as an `It` block.
