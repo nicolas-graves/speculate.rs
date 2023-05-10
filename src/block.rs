@@ -56,6 +56,8 @@ fn parse_block(input: ParseStream) -> Result<Option<Block>, Error> {
 
         if let Ok(item) = forked_input.parse::<syn::Item>() {
             input.parse::<syn::Item>().unwrap();
+            println!("Parsing item...");
+            println!("Input for item: {:?}", input);
             Ok(Some(Block::Item(item)))
         } else {
             let lookahead = input.lookahead1();
