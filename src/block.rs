@@ -82,6 +82,9 @@ pub struct Describe {
 }
 
 fn parse_content(input: ParseStream) -> Result<(Vec<Stmt>, Vec<Stmt>, Vec<Block>), Error> {
+    println!("Parsing block...");
+    println!("Input for block: {:?}", input);
+
     let mut before_vec: Vec<Stmt> = Vec::new();
     let mut after_vec: Vec<Stmt> = Vec::new();
     let mut blocks: Vec<Block> = Vec::new();

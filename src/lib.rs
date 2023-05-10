@@ -117,12 +117,12 @@ mod generator;
 #[proc_macro]
 pub fn speculate(input: TokenStream) -> TokenStream {
     let input: proc_macro2::TokenStream = input.into();
-    // println!("Speculate input tokens: {}", input.to_string());
+    println!("Speculate input tokens: {}", input.to_string());
 
     let input_describe: Describe = syn::parse2(input.clone()).unwrap();
 
     let output: proc_macro2::TokenStream = input_describe.generate(None);
-    // println!("Generated output tokens: {}", output.to_string());
+    println!("Generated output tokens: {}", output.to_string());
 
     output.into()
 }
