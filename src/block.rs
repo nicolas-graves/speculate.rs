@@ -163,6 +163,9 @@ impl Parse for Describe {
             let content_inside_braces;
             let _brace_token = syn::braced!(content_inside_braces in input);
             (before_vec, after_vec, blocks) = parse_content(&content_inside_braces)?;
+            if !content_inside_braces.is_empty() {
+                return Err(content_inside_braces.error("Did not consume all input inside braces"));
+            }
         } else {
             (before_vec, after_vec, blocks) = parse_content(input)?;
         }
