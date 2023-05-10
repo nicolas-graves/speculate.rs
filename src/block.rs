@@ -152,6 +152,7 @@ impl Parse for Describe {
             blocks,
         };
         println!("Parsed Describe block: {:?}", describe);
+        println!("Rest of input is {:?}", input);
         Ok(describe)
     }
 }
