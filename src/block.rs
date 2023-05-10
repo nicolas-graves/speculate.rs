@@ -62,21 +62,25 @@ fn parse_block(input: ParseStream) -> Result<Option<Block>, Error> {
         // If the next token is '#', parse as an `It` block.
         let block = input.parse::<It>()?;
         Ok(Some(Block::It(block)))
-    } else if lookahead.peek(describe) || lookahead.peek(context) {
+    } else if lookahead.peek(describe) {
         println!("Found describe...");
-        input.parse::<syn::token::Ident>()?;
+        let _: describe = input.parse()?;
         Ok(Some(input.parse::<Describe>().map(Block::Describe)?))
-    } else if lookahead.peek(describe) || lookahead.peek(context) {
-        println!("Found describe...");
-        input.parse::<syn::token::Ident>()?;
+    } else if lookahead.peek(context) {
+        println!("Found context...");
+        let _: context = input.parse()?;
         Ok(Some(input.parse::<Describe>().map(Block::Describe)?))
-    } else if lookahead.peek(it) || lookahead.peek(test) {
+    } else if lookahead.peek(it) {
+        println!("Found it...");
+        let _: it = input.parse()?;
+        Ok(Some(input.parse::<It>().map(Block::It)?))
+    } else if lookahead.peek(test) {
         println!("Found test...");
-        input.parse::<syn::token::Ident>()?;
+        let _: test = input.parse()?;
         Ok(Some(input.parse::<It>().map(Block::It)?))
     } else if lookahead.peek(bench) {
         println!("Found bench...");
-        input.parse::<syn::token::Ident>()?;
+        let _: bench = input.parse()?;
         Ok(Some(input.parse::<Bench>().map(Block::Bench)?))
     } else if let Ok(item) = forked_input.parse::<syn::Item>() {
         println!("Parsing item...");
