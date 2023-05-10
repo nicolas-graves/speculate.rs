@@ -59,7 +59,7 @@ fn parse_block(input: ParseStream) -> Result<Option<Block>, Error> {
         if lookahead.peek(describe) || lookahead.peek(context) {
             println!("Found describe...");
             let describe = Some(input.parse::<Describe>().map(Block::Describe)?);
-            println!("Parsed Describe block: {:?}", describe);
+            println!("Parsed Describe block here: {:?}", describe);
             Ok(describe)
         } else if lookahead.peek(it) || lookahead.peek(test) {
             println!("Found test...");
