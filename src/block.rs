@@ -43,6 +43,9 @@ pub enum Block {
 }
 
 fn parse_block(input: ParseStream) -> Result<Option<Block>, Error> {
+    println!("Parsing block...");
+    println!("Input for parse_block: {:?}", input);
+
     if input.is_empty() {
         return Ok(None);
     }
