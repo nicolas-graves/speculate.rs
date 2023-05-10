@@ -170,6 +170,11 @@ impl Parse for It {
             let _: it = input.parse()?;
         } else if lookahead.peek(test) {
             let _: test = input.parse()?;
+        } else if let Ok(item) = forked_input.parse::<syn::Item>() {
+            input.parse::<syn::Item>().unwrap();
+            println!("Parsing item...");
+            println!("Input for item: {:?}", input);
+            Ok(Some(Block::Item(item)))
         } else {
             return Err(lookahead.error());
         }
