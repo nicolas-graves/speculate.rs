@@ -60,6 +60,7 @@ fn parse_block(input: ParseStream) -> Result<Option<Block>, Error> {
             println!("Found describe...");
             match input.parse::<Describe>() {
                 Ok(describe_block) => {
+                    println!("Parsed describe block.....");
                     let block = Block::Describe(describe_block);
                     println!("Parsed Describe block here: {:?}", block);
                     Ok(Some(block))
