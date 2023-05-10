@@ -50,43 +50,40 @@ fn parse_block(input: ParseStream) -> Result<Option<Block>, Error> {
         return Ok(None);
     }
 
-    if input.peek(syn::token::Pound) {
+    let forked_input = input.fork();
+    let lookahead = input.lookahead1();
+
+    if lookahead.peek(syn::token::Pound) {
         // If the next token is '#', parse as an `It` block.
         let block = input.parse::<It>()?;
         Ok(Some(Block::It(block)))
-    } else {
-        let forked_input = input.fork();
-
-        let lookahead = input.lookahead1();
-
-        if lookahead.peek(describe) || lookahead.peek(context) {
-            println!("Found describe...");
-            match input.parse::<Describe>() {
-                Ok(describe_block) => {
-                    println!("Parsed describe block.....");
-                    let block = Block::Describe(describe_block);
-                    println!("Parsed Describe block here: {:?}", block);
-                    Ok(Some(block))
-                },
-                Err(e) => {
-                    println!("Error when parsing Describe: {}", e);
-                    return Err(e);
-                },
-            }
-        } else if lookahead.peek(it) || lookahead.peek(test) {
-            println!("Found test...");
-            Ok(Some(input.parse::<It>().map(Block::It)?))
-        } else if lookahead.peek(bench) {
-            println!("Found bench...");
-            Ok(Some(input.parse::<Bench>().map(Block::Bench)?))
-        } else if let Ok(item) = forked_input.parse::<syn::Item>() {
-            input.parse::<syn::Item>().unwrap();
-            println!("Parsing item...");
-            println!("Input for item: {:?}", input);
-            Ok(Some(Block::Item(item)))
-        } else {
-            Ok(None)
+    } else if lookahead.peek(describe) || lookahead.peek(context) {
+        println!("Found describe...");
+        match input.parse::<Describe>() {
+            Ok(describe_block) => {
+                println!("Parsed describe block.....");
+                let block = Block::Describe(describe_block);
+                println!("Parsed Describe block here: {:?}", block);
+                Ok(Some(block))
+            },
+            Err(e) => {
+                println!("Error when parsing Describe: {}", e);
+                return Err(e);
+            },
         }
+    } else if lookahead.peek(it) || lookahead.peek(test) {
+        println!("Found test...");
+        Ok(Some(input.parse::<It>().map(Block::It)?))
+    } else if lookahead.peek(bench) {
+        println!("Found bench...");
+        Ok(Some(input.parse::<Bench>().map(Block::Bench)?))
+    } else if let Ok(item) = forked_input.parse::<syn::Item>() {
+        input.parse::<syn::Item>().unwrap();
+        println!("Parsing item...");
+        println!("Input for item: {:?}", input);
+        Ok(Some(Block::Item(item)))
+    } else {
+        Ok(None)
     }
 }
 
