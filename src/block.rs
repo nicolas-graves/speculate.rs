@@ -176,7 +176,7 @@ impl Parse for It {
 
         let name: LitStr = input.parse()?;
         let block = input.parse::<syn::Block>()?;
-        println!("Parsed it block: {:?}");
+        println!("Parsed it block: {:?}", block);
 
         Ok(It {
             name: litstr_to_ident(&name),
