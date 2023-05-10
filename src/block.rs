@@ -62,6 +62,7 @@ fn parse_block(input: ParseStream) -> Result<Option<Block>, Error> {
         } else if lookahead.peek(it) || lookahead.peek(test) {
             println!("Found test...");
             Ok(Some(input.parse::<It>().map(Block::It)?))
+            println!("Parsed test...");
         } else if lookahead.peek(bench) {
             println!("Found bench...");
             Ok(Some(input.parse::<Bench>().map(Block::Bench)?))
