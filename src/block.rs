@@ -83,7 +83,6 @@ fn parse_block(input: ParseStream) -> Result<Option<Block>, Error> {
         println!("Found bench...");
         Ok(Some(input.parse::<Bench>().map(Block::Bench)?))
     } else if let Ok(item) = forked_input.parse::<syn::Item>() {
-        input.parse::<syn::Item>().unwrap();
         println!("Parsing item...");
         println!("Input for item: {:?}", input);
         Ok(Some(Block::Item(item)))
