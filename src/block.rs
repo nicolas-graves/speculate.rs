@@ -34,7 +34,7 @@ custom_keyword!(before);
 custom_keyword!(after);
 custom_keyword!(bench);
 
-#[derive(Clone)]
+#[derive(Clone, Debug)]
 pub enum Block {
     Describe(Describe),
     It(It),
@@ -76,7 +76,7 @@ fn parse_block(input: ParseStream) -> Result<Option<Block>, Error> {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Debug)]
 pub struct Describe {
     pub name: syn::Ident,
     pub before: Vec<Stmt>,
@@ -151,11 +151,12 @@ impl Parse for Describe {
             after: after_vec,
             blocks,
         };
+        println!("Parsed Describe block: {:?}", describe);
         Ok(describe)
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Debug)]
 pub struct It {
     pub name: syn::Ident,
     pub attributes: Vec<syn::Attribute>,
@@ -170,11 +171,6 @@ impl Parse for It {
             let _: it = input.parse()?;
         } else if lookahead.peek(test) {
             let _: test = input.parse()?;
-        } else if let Ok(item) = forked_input.parse::<syn::Item>() {
-            input.parse::<syn::Item>().unwrap();
-            println!("Parsing item...");
-            println!("Input for item: {:?}", input);
-            Ok(Some(Block::Item(item)))
         } else {
             return Err(lookahead.error());
         }
@@ -191,7 +187,7 @@ impl Parse for It {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Debug)]
 pub struct Bench {
     pub name: syn::Ident,
     pub ident: syn::Ident,
