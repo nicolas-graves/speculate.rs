@@ -52,7 +52,11 @@ fn parse_block(input: ParseStream) -> Result<Option<Block>, Error> {
 
     let forked_input = input.fork();
     let lookahead = input.lookahead1();
-    println!("Lookahead result: {:?}", lookahead);
+    println!("Lookahead sees describe: {}", lookahead.peek(describe));
+    println!("Lookahead sees context: {}", lookahead.peek(context));
+    println!("Lookahead sees it: {}", lookahead.peek(it));
+    println!("Lookahead sees test: {}", lookahead.peek(test));
+    println!("Lookahead sees bench: {}", lookahead.peek(bench));
 
     if lookahead.peek(syn::token::Pound) {
         // If the next token is '#', parse as an `It` block.
