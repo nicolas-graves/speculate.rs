@@ -131,19 +131,24 @@ fn parse_content(input: ParseStream) -> Result<(Vec<Stmt>, Vec<Stmt>, Vec<Block>
 
 impl Parse for Describe {
     fn parse(input: ParseStream) -> Result<Self, Error> {
+        println!("Starting to parse Describe...");
         let lookahead = input.lookahead1();
-        let name : syn::Ident = if lookahead.peek(describe) {
+        let name: syn::Ident = if lookahead.peek(describe) {
             let _: describe = input.parse()?;
             let name: LitStr = input.parse()?;
+            println!("Parsed describe name...");
             litstr_to_ident(&name)
         } else if lookahead.peek(context) {
             let _: context = input.parse()?;
             let name: LitStr = input.parse()?;
+            println!("Parsed context name...");
             litstr_to_ident(&name)
         } else { // Should only enter here in the case of speculate root.
+            println!("Using root name...");
             get_root_name()
         };
 
+        println!("Parsing content...");
         let before_vec: Vec<Stmt>;
         let after_vec: Vec<Stmt>;
         let blocks: Vec<Block>;
@@ -155,6 +160,7 @@ impl Parse for Describe {
         } else {
             (before_vec, after_vec, blocks) = parse_content(input)?;
         }
+
         let describe = Describe {
             name,
             before: before_vec,
